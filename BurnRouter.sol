@@ -7,8 +7,8 @@ contract Burner is Ownable {
     event Information(uint256 assetId, string tokenURI);
     event ReturnOwnership(address owner);
     
-    function BurnKjos(uint256 assetId) public returns (bool) {
-        asset = Klaytn17(0x53dfc10674fd84605840884d7d021287f098c2af);
+    function BurnKjos(address assetAddress, uint256 assetId) public returns (bool) {
+        asset = Klaytn17(assetAddress);
         require(asset.ownerOf(assetId) == msg.sender);
         require(asset.isApprovedForAll(msg.sender, address(this)));
         
@@ -19,8 +19,8 @@ contract Burner is Ownable {
         return true;
     }
     
-    function ReturnKjosOwnership() public onlyOwner returns (bool) {
-        asset = Klaytn17(0x53dfc10674fd84605840884d7d021287f098c2af);
+    function ReturnKjosOwnership(address assetAddress) public onlyOwner returns (bool) {
+        asset = Klaytn17(assetAddress);
         require(asset.isOwner());
         asset.transferOwnership(owner());
         emit ReturnOwnership(owner());
