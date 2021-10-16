@@ -17,11 +17,13 @@ contract Minter is Ownable {
     
     Detail[] private data;
     uint256 private startTime = 1634468400;
-    uint256 private mintPrice = 20000000;
+    uint256 private mintPrice = 20000000000000000000;
     
     function _deleteElement(uint256 _index) private {
-        for (uint256 i = _index; i < data.length - 1; i++) {
-          data[i] = data[i + 1];
+        if (data.length != 1) {
+            for (uint256 i = _index; i < data.length - 1; i++) {
+              data[i] = data[i + 1];
+            }
         }
         delete data[data.length - 1];
         data.length--;
@@ -34,9 +36,8 @@ contract Minter is Ownable {
 
         newAsset = Klaytn17(newAssetAddress);
         newAsset.mintWithTokenURI(msg.sender, data[0].index, data[0].uri);
-        _deleteElement(0);
-        
         emit MintNew(data[0].index, data[0].uri);
+        _deleteElement(0);
 
         return true;
     }
