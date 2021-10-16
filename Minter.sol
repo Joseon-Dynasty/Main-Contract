@@ -16,6 +16,8 @@ contract Minter is Ownable {
     }
     
     Detail[] private data;
+    uint256 private startTime = 1634468400;
+    uint256 private mintPrice = 20000000;
     
     function _deleteElement(uint256 _index) private {
         for (uint256 i = _index; i < data.length - 1; i++) {
@@ -26,8 +28,9 @@ contract Minter is Ownable {
     }
     
     function MintJoseonDynasty(address newAssetAddress) public payable returns (bool) {
+        require(now >= startTime);
         require(data.length != 0);
-        require(msg.value == 1000000);
+        require(msg.value >= mintPrice);
 
         newAsset = Klaytn17(newAssetAddress);
         newAsset.mintWithTokenURI(msg.sender, data[0].index, data[0].uri);
@@ -52,8 +55,22 @@ contract Minter is Ownable {
         return true;
     }
     
-    function getLeft() public view returns (uint256) {
+    function getLeftTime() public view returns (uint256){
+        return startTime - now;
+    }
+    
+    function getLeftAmount() public view returns (uint256) {
         return data.length;
+    }
+    
+    function setStartTime(uint256 _time) public onlyOwner returns (bool) {
+        startTime = _time;
+        return true;
+    }
+    
+    function setPrice(uint256 _price) public onlyOwner returns (bool) {
+        mintPrice = _price;
+        return true;
     }
     
     function getIndex(uint256 _index) public view onlyOwner returns (uint256) {
